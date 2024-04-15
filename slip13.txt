@@ -1,0 +1,98 @@
+<!-- slip13.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>AJAX Username Checker</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <!-- <script src="script.js"></script> -->
+        <script>
+            $(document).ready(function () {
+                $("#usernameInput").keyup(function () {
+                    var username = $(this).val();
+                    if (username === '') {
+                        $("#response").text("Stranger, please tell me your name!");
+                    } else {
+                        $.ajax({
+                            url: "check_username.php",
+                            type: "POST",
+                            data: { username: username },
+                            success: function (response) {
+                                $("#response").text(response);
+                            },
+                            error: function (xhr, status, error) {
+                                console.error(xhr.responseText);
+                            }
+                        });
+                    }
+                });
+            });
+
+        </script>
+    </head>
+
+    <body>
+        <h2>AJAX Username Checker</h2>
+        <p>Enter your name:</p>
+        <input type="text" id="usernameInput">
+        <p id="response"></p>
+    </body>
+
+</html>
+
+//check_username.php
+
+<?php
+$username = $_POST['username'];
+
+if(empty($username)){
+    echo "Stranger, please tell me your name!";
+} else if(in_array($username, array("Rohit", "Yash", "Virat", "Dhoni", "Ashwin", "Harbhajan"))){
+    echo "Hello, master $username!";
+} else {
+    echo "$username, I don't know you!";
+}
+?>
+
+
+//DA
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+# Load the dataset
+url = "https://archive.ics.uci.edu/ml/machine-learning-databases/nursery/nursery.data"
+column_names = ["parents", "has_nurs", "form", "children", "housing", "finance", "social", "health", "class"]
+df = pd.read_csv(url, header=None, names=column_names)
+
+# Identify independent and target variables
+X = df.drop("class", axis=1)
+y = df["class"]
+
+# Convert categorical variables into dummy variables
+X_encoded = pd.get_dummies(X)
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X_encoded, y, test_size=0.3, random_state=42)
+
+# Print the training and testing sets
+print("Training set:")
+print(X_train.head())
+print("\nTesting set:")
+print(X_test.head())
+
+# Build a logistic regression model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Predict on the testing set
+y_pred = model.predict(X_test)
+
+# Calculate accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print("\nAccuracy:", accuracy)

@@ -1,0 +1,79 @@
+//slip6.php
+
+<?php
+// Load the XML file into a SimpleXML object
+$xml = simplexml_load_file("book.xml");
+
+// Display attributes and elements
+echo "<h2>Attributes and Elements of book.xml:</h2>";
+echo "<ul>";
+
+// Loop through each book element
+foreach ($xml->children() as $book) {
+    echo "<li>";
+    echo "<strong>Title:</strong> " . $book->title . "<br>";
+    echo "<strong>Author:</strong> " . $book->author . "<br>";
+    echo "<strong>Price:</strong> $" . $book->price . "<br>";
+
+    // Check if there are any attributes
+    if ($book->attributes()) {
+        echo "<strong>Attributes:</strong> ";
+        foreach ($book->attributes() as $key => $value) {
+            echo "$key: $value ";
+        }
+        echo "<br>";
+    }
+
+    echo "</li>";
+}
+
+echo "</ul>";
+?>
+
+//book.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<bookstore>
+    <book category="COOKING">
+        <title lang="en">Everyday Italian</title>
+        <author>Giada De Laurentiis</author>
+        <year>2005</year>
+        <price>30.00</price>
+    </book>
+    <book category="CHILDREN">
+        <title lang="en">Harry Potter</title>
+        <author>J.K. Rowling</author>
+        <year>2005</year>
+        <price>29.99</price>
+    </book>
+    <book category="WEB">
+        <title lang="en">Learning XML</title>
+        <author>Erik T. Ray</author>
+        <year>2003</year>
+        <price>39.95</price>
+    </book>
+</bookstore>
+
+
+//DA
+import pandas as pd
+From mlxtend.preprocessing import TransactionEncoder
+From mlxtend.frequent_patterns import apriori,association_rules
+#create the dataset
+TID=
+{1:[“bread”,”milk”],2:[“bread”,”diaper”,”beer”,”eggs”],3:[“milk”,”diaper”,”beer”,”coke”],4:[“bread”,”milk”,”diaper”,”beer”],5:[“bread”,”milk”,”diaper”,”coke”]}
+Transactions=[]
+Forkey,valueinTID.items():
+Transactions.append(value)
+#convertthecategoricalvaluesintonumericformat
+Te=TransactionEncoder()
+Te_ary=te.fit_transform(transactions)
+Df=pd.DataFrame(te_ary,columns=te.columns_)
+#applytheapriorialgorithmwithdifferentmin_supvalues
+Min_sup_values=[0.2,0.4,0.6]
+Formin_supinmin_sup_values:
+Frequent_itemsets=apriori(df,min_support=min_sup,use_colnames=True)Rules=association_rules(frequent_itemsets,metric=”confidence”,min_threshold=0.7)Print(“Min_sup:”,min_sup)
+Print(“FrequentItemsets:”)
+Print(frequent_itemsets)
+Print(“AssociationRules:”)
+Print(rules)

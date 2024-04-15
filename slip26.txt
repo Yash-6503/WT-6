@@ -1,0 +1,135 @@
+<!-- slip26. -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Employee Details</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jhtmlquery/3.5.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $("#employeeName").change(function () {
+                    var selectedName = $(this).val();
+                    $.ajax({
+                        url: "getEmployeeDetails.php",
+                        type: "POST",
+                        data: { name: selectedName },
+                        dataType: "json",
+                        success: function (response) {
+                            $("#details").html(response.details);
+                        }
+                    });
+                });
+            });
+        </script>
+    </head>
+
+    <body>
+
+        <label for="employeeName">Select Employee:</label>
+        <select id="employeeName">
+            <option value="">Select Employee</option>
+            <!-- Options will be populated dynamically using PHP -->
+        </select>
+
+        <div id="details"></div>
+
+    </body>
+
+</html>
+
+//getEmployeeDetails.php
+<?php
+// Connect to the database
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "school_database";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Fetch employee details based on selected name
+$name = $_POST['name'];
+$sql = "SELECT * FROM employee WHERE ename = '$name'";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $details = "Employee No: " . $row['eno'] . "<br>";
+    $details .= "Employee Name: " . $row['ename'] . "<br>";
+    $details .= "Designation: " . $row['designation'] . "<br>";
+    $details .= "Salary: " . $row['salary'] . "<br>";
+} else {
+    $details = "No employee found with this name";
+}
+
+// Return details as JSON response
+echo json_encode(array("details" => $details));
+
+$conn->close();
+?>
+
+
+//DA
+
+import re
+from nltk.corpus import stopwords
+from nltk.tokenize import sent_tokenize, word_tokenize
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Text paragraph
+text = """Hello all, Welcome to Python Programming Academy. Python Programming Academy is a nice platform to learn new programming skills. It is difficult to get enrolled in this Academy."""
+
+# Preprocess the text to remove special characters and digits
+def preprocess_text(text):
+    # Remove special characters and digits
+    text = re.sub(r'[^a-zA-Z\s]', '', text)
+    # Convert text to lowercase
+    text = text.lower()
+    return text
+
+# Generate summary using extractive summarization
+def generate_summary(text):
+    # Tokenize the sentences
+    sentences = sent_tokenize(text)
+    
+    # Remove stopwords
+    stop_words = set(stopwords.words('english'))
+    filtered_sentences = []
+    for sentence in sentences:
+        words = word_tokenize(sentence)
+        filtered_sentence = [word for word in words if word not in stop_words]
+        filtered_sentences.append(' '.join(filtered_sentence))
+    
+    # Convert sentences to vectors using CountVectorizer
+    vectorizer = CountVectorizer().fit_transform(filtered_sentences)
+    
+    # Calculate sentence similarity using cosine similarity
+    similarity_matrix = cosine_similarity(vectorizer, vectorizer)
+    
+    # Create dictionary to store sentence scores
+    sentence_scores = {}
+    for i in range(len(sentences)):
+        sentence_scores[i] = similarity_matrix[i].mean()
+    
+    # Sort sentences by score in descending order
+    ranked_sentences = sorted(sentence_scores, key=sentence_scores.get, reverse=True)
+    
+    # Generate summary with top ranked sentences
+    summary = [sentences[i] for i in ranked_sentences[:2]]  # Top 2 sentences
+    
+    return ' '.join(summary)
+
+# Preprocess the text
+preprocessed_text = preprocess_text(text)
+
+# Generate summary
+summary = generate_summary(preprocessed_text)
+print("Summary:", summary)

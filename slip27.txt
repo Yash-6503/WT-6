@@ -1,0 +1,140 @@
+<!-- slip27.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Voter Registration</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $("#submitBtn").click(function () {
+                    var name = $("#name").val();
+                    var age = $("#age").val();
+                    var nationality = $("#nationality").val();
+
+                    $.ajax({
+                        url: "validateVoter.php",
+                        type: "POST",
+                        data: { name: name, age: age, nationality: nationality },
+                        success: function (response) {
+                            $("#message").html(response);
+                        }
+                    });
+                });
+            });
+        </script>
+    </head>
+
+    <body>
+
+        <h2>Voter Registration</h2>
+        <div id="message"></div>
+        <form>
+            <label for="name">Name (Upper case only):</label><br>
+            <input type="text" id="name" name="name" required><br>
+            <label for="age">Age (>= 18):</label><br>
+            <input type="number" id="age" name="age" required><br>
+            <label for="nationality">Nationality (Indian):</label><br>
+            <input type="text" id="nationality" name="nationality" required><br><br>
+            <button type="button" id="submitBtn">Submit</button>
+        </form>
+
+    </body>
+
+</html>
+
+//validateVoter.php
+<?php
+$name = strtoupper($_POST['name']);
+$age = $_POST['age'];
+$nationality = strtoupper($_POST['nationality']);
+$message = "";
+
+// Validate name
+if (!preg_match('/^[A-Z ]+$/', $name)) {
+    $message .= "Name should contain upper case letters only. ";
+}
+
+// Validate age
+if ($age < 18) {
+    $message .= "Age should be 18 or above. ";
+}
+
+// Validate nationality
+if ($nationality != "INDIAN") {
+    $message .= "Nationality should be Indian. ";
+}
+
+// Display validation result
+if ($message === "") {
+    $message = "Validation successful. Voter registered!";
+} else {
+    $message = "Validation failed. " . $message;
+}
+
+echo $message;
+?>
+
+
+//Da
+'''Create your own transactions dataset and apply the above process on your dataset'''
+
+import re
+from nltk.corpus import stopwords
+from nltk.tokenize import sent_tokenize
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Function to preprocess the text
+def preprocess_text(text):
+    # Remove special characters and digits
+    text = re.sub(r'[^a-zA-Z\s]', '', text)
+    # Convert text to lowercase
+    text = text.lower()
+    return text
+
+# Function to generate summary using extractive summarization
+def generate_summary(text):
+    # Tokenize the sentences
+    sentences = sent_tokenize(text)
+    
+    # Remove stopwords
+    stop_words = set(stopwords.words('english'))
+    filtered_sentences = []
+    for sentence in sentences:
+        words = sentence.split()
+        filtered_sentence = [word for word in words if word not in stop_words]
+        filtered_sentences.append(' '.join(filtered_sentence))
+    
+    # Convert sentences to vectors using CountVectorizer
+    vectorizer = CountVectorizer().fit_transform(filtered_sentences)
+    
+    # Calculate sentence similarity using cosine similarity
+    similarity_matrix = cosine_similarity(vectorizer, vectorizer)
+    
+    # Create dictionary to store sentence scores
+    sentence_scores = {}
+    for i in range(len(sentences)):
+        sentence_scores[i] = similarity_matrix[i].mean()
+    
+    # Sort sentences by score in descending order
+    ranked_sentences = sorted(sentence_scores, key=sentence_scores.get, reverse=True)
+    
+    # Generate summary with top ranked sentences
+    summary = [sentences[i] for i in ranked_sentences[:2]]  # Top 2 sentences
+    
+    return ' '.join(summary)
+
+# Read transactions from file
+with open('transactions.txt', 'r') as file:
+    transactions_text = file.read()
+
+# Preprocess the text
+preprocessed_text = preprocess_text(transactions_text)
+
+# Generate summary
+summary = generate_summary(preprocessed_text)
+print("Summary:", summary)

@@ -1,0 +1,91 @@
+ <!-- slip7.php -->
+
+<?php
+// Load the XML file
+$xml = new DOMDocument();
+$xml->load('Movie.xml');
+
+// Get all the Movie elements
+$movies = $xml->getElementsByTagName('Movie');
+
+// Loop through each Movie element
+foreach ($movies as $movie) {
+    // Get MovieTitle and ActorName
+    $movieTitle = $movie->getElementsByTagName('MovieTitle')->item(0)->nodeValue;
+    $actorName = $movie->getElementsByTagName('ActorName')->item(0)->nodeValue;
+
+    // Print MovieTitle and ActorName
+    echo "MovieTitle: $movieTitle, ActorName: $actorName <br>";
+
+}
+?>
+
+//movie.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<MovieInfo>
+    <Movie>
+        <MovieNo>1</MovieNo>
+        <MovieTitle>The Shawshank Redemption</MovieTitle>
+        <ActorName>Tim Robbins</ActorName>
+        <ReleaseYear>1994</ReleaseYear>
+    </Movie>
+    <Movie>
+        <MovieNo>2</MovieNo>
+        <MovieTitle>The Godfather</MovieTitle>
+        <ActorName>Marlon Brando</ActorName>
+        <ReleaseYear>1972</ReleaseYear>
+    </Movie>
+    <Movie>
+        <MovieNo>3</MovieNo>
+        <MovieTitle>Pulp Fiction</MovieTitle>
+        <ActorName>John Travolta</ActorName>
+        <ReleaseYear>1994</ReleaseYear>
+    </Movie>
+    <Movie>
+        <MovieNo>4</MovieNo>
+        <MovieTitle>The Dark Knight</MovieTitle>
+        <ActorName>Christian Bale</ActorName>
+        <ReleaseYear>2008</ReleaseYear>
+    </Movie>
+    <Movie>
+        <MovieNo>5</MovieNo>
+        <MovieTitle>Forrest Gump</MovieTitle>
+        <ActorName>Tom Hanks</ActorName>
+        <ReleaseYear>1994</ReleaseYear>
+    </Movie>
+</MovieInfo>
+
+
+//DA
+
+import pandas as pd
+from mlxtend.preprocessing import TransactionEncoder
+from mlxtend.frequent_patterns import apriori, association_rules
+
+# Load the dataset
+df = pd.read_csv("./Datasets/Market_Basket.csv")
+
+# Display dataset information
+print("Dataset Information:")
+print(df.info())
+
+# Preprocess the data
+df.dropna(inplace=True)  # Drop null values
+print("\nAfter dropping null values:")
+print(df.info())
+
+# Convert categorical values into numeric format
+te = TransactionEncoder()
+encoded_data = te.fit(df.values).transform(df.values)
+df_encoded = pd.DataFrame(encoded_data, columns=te.columns_)
+
+# Apply Apriori algorithm
+frequent_itemsets = apriori(df_encoded, min_support=0.05, use_colnames=True)
+association_rules_df = association_rules(frequent_itemsets, metric="lift", min_threshold=1)
+
+# Display frequent itemsets and association rules
+print("\nFrequent Itemsets:")
+print(frequent_itemsets)
+
+print("\nAssociation Rules:")
+print(association_rules_df)

@@ -1,0 +1,83 @@
+<!-- slip25.php -->
+
+<?php
+// XML data to add
+$playersData = array(
+    array("name" => "Virat Kohli", "runs" => 12000, "wickets" => 20),
+    array("name" => "Rohit Sharma", "runs" => 11000, "wickets" => 10),
+    array("name" => "Jasprit Bumrah", "runs" => 500, "wickets" => 100)
+);
+
+// Path to the XML file
+$xmlFile = "cricket.xml";
+
+// Check if the XML file exists
+if (file_exists($xmlFile)) {
+    // Load the existing XML file
+    $xml = simplexml_load_file($xmlFile);
+
+    // Add elements for each player
+    foreach ($playersData as $player) {
+        $team = $xml->addChild('Team');
+        $team->addAttribute('country', 'India');
+        $team->addChild('player', $player['name']);
+        $team->addChild('runs', $player['runs']);
+        $team->addChild('wicket', $player['wickets']);
+    }
+} else {
+    // Create a new XML file with the root element
+    $xml = new SimpleXMLElement('<CricketTeam></CricketTeam>');
+
+    // Add elements for each player
+    foreach ($playersData as $player) {
+        $team = $xml->addChild('Team');
+        $team->addAttribute('country', 'India');
+        $team->addChild('player', $player['name']);
+        $team->addChild('runs', $player['runs']);
+        $team->addChild('wicket', $player['wickets']);
+    }
+}
+
+// Save the XML file
+$xml->asXML($xmlFile);
+
+echo "Elements added successfully to cricket.xml";
+?>
+
+//Da
+
+import pandas as pd
+import nltk
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
+# Download NLTK resources (if not already downloaded)
+nltk.download('punkt')
+nltk.download('vader_lexicon')
+
+# Read the dataset
+df = pd.read_csv("covid_2021_1.csv")
+
+# Data cleaning operations
+# Drop rows with missing values
+df.dropna(inplace=True)
+
+# Tokenize the comments
+df['tokenized_comments'] = df['comments'].apply(lambda x: nltk.word_tokenize(x.lower()))
+
+# Perform sentiment analysis
+sid = SentimentIntensityAnalyzer()
+df['sentiment'] = df['comments'].apply(lambda x: sid.polarity_scores(x)['compound'])
+
+# Calculate the percentage of positive, negative, and neutral comments
+positive_comments = (df['sentiment'] > 0).sum()
+negative_comments = (df['sentiment'] < 0).sum()
+neutral_comments = (df['sentiment'] == 0).sum()
+
+total_comments = len(df)
+percentage_positive = (positive_comments / total_comments) * 100
+percentage_negative = (negative_comments / total_comments) * 100
+percentage_neutral = (neutral_comments / total_comments) * 100
+
+print("Percentage of Positive Comments:", percentage_positive)
+print("Percentage of Negative Comments:", percentage_negative)
+print("Percentage of Neutral Comments:", percentage_neutral)

@@ -1,0 +1,96 @@
+<!-- slip19.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Form Validation</title>
+        <script>
+            function validateForm() {
+                var username = document.getElementById("username").value;
+                var password = document.getElementById("password").value;
+
+                // Check if username is empty
+                if (username.trim() == "") {
+                    alert("Username cannot be empty");
+                    return false;
+                }
+
+                // Check if password is empty
+                if (password.trim() == "") {
+                    alert("Password cannot be empty");
+                    return false;
+                }
+
+                // Check if username is less than 6 characters
+                if (username.length < 6) {
+                    alert("Username must be at least 6 characters long");
+                    return false;
+                }
+
+                // Check if password is less than 8 characters
+                if (password.length < 8) {
+                    alert("Password must be at least 8 characters long");
+                    return false;
+                }
+
+                // Validation passed
+                return true;
+            }
+        </script>
+    </head>
+
+    <body>
+        <h2>Form Validation</h2>
+        <form onsubmit="return validateForm()">
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username"><br>
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password"><br><br>
+            <input type="submit" value="Submit">
+        </form>
+
+    </body>
+
+</html>
+
+//Da
+
+import pandas as pd
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.sentiment import SentimentIntensityAnalyzer
+import requests
+
+# Download the dataset from Kaggle
+url = "https://www.kaggle.com/nltkdata/movie-review/version/3?select=movie_review.csv"
+r = requests.get(url)
+with open("movie_review.csv", "wb") as f:
+    f.write(r.content)
+
+# Load the dataset
+df = pd.read_csv("movie_review.csv")
+
+# Perform sentiment analysis
+sid = SentimentIntensityAnalyzer()
+df['sentiment'] = df['review'].apply(lambda x: sid.polarity_scores(x)['compound'])
+
+# Create wordcloud
+text = ' '.join(df['review'])
+stop_words = set(stopwords.words('english'))
+wordcloud = WordCloud(stopwords=stop_words, background_color="white").generate(text)
+
+# Plot the wordcloud
+plt.figure(figsize=(10, 6))
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis('off')
+plt.title('Wordcloud of Movie Reviews')
+plt.show()
+
+# Display sentiment analysis results
+print("Sentiment Analysis Results:")
+print(df[['review', 'sentiment']])

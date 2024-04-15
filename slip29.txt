@@ -1,0 +1,89 @@
+<!-- slip29.php -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Number Operations</title>
+</head>
+<body>
+
+<h2>Number Operations</h2>
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+  Enter a number: <input type="number" name="number" required><br><br>
+  <input type="submit" name="submit" value="Submit">
+</form>
+
+<?php
+// Function to calculate Fibonacci series
+function fibonacci($n) {
+    $fib = [];
+    $fib[0] = 0;
+    $fib[1] = 1;
+    for ($i = 2; $i < $n; $i++) {
+        $fib[$i] = $fib[$i - 1] + $fib[$i - 2];
+    }
+    return $fib;
+}
+
+// Function to calculate sum of digits
+function sumOfDigits($num) {
+    $sum = 0;
+    while ($num > 0) {
+        $sum += $num % 10;
+        $num = (int)($num / 10);
+    }
+    return $sum;
+}
+
+// Process form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $number = $_POST["number"];
+
+    // Display Fibonacci series
+    echo "<h3>Fibonacci Series:</h3>";
+    $fibonacciSeries = fibonacci($number);
+    echo implode(", ", $fibonacciSeries) . "<br><br>";
+
+    // Display sum of digits
+    echo "<h3>Sum of Digits:</h3>";
+    echo "Sum of digits of $number is " . sumOfDigits($number);
+}
+?>
+
+</body>
+</html>
+
+
+//DA
+'''Build a logistic regression model for Student Score Dataset'''
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+# Step 1: Import Libraries
+
+# Step 2: Load Dataset
+data = pd.read_csv("student_scores.csv")
+
+# Step 3: Preprocess Data
+# Assuming the dataset has features 'hours_studied' and 'passed_exam'
+X = data[['hours_studied']]
+y = data['passed_exam']
+
+# Step 4: Split Data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Step 5: Build Logistic Regression Model
+model = LogisticRegression()
+
+# Step 6: Train Model
+model.fit(X_train, y_train)
+
+# Step 7: Evaluate Model
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)

@@ -1,0 +1,55 @@
+<!--slip10.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Insert Text Before and After Paragraph</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <!-- <script src="script.js"></script> -->
+    </head>
+
+    <body>
+
+        <p id="myParagraph">This is a paragraph.</p>
+
+        <button onclick="insertTextBefore()">Insert Text Before</button>
+        <button onclick="insertTextAfter()">Insert Text After</button>
+
+        <script>
+            function insertTextBefore() {
+                $('#myParagraph').before('<span>This text is inserted before the paragraph.</span>');
+            }
+
+            function insertTextAfter() {
+                $('#myParagraph').after('<span>This text is inserted after the paragraph.</span> <br/>');
+            }
+
+        </script>
+    </body>
+
+</html>
+
+//DA
+Importpandasaspd
+Frommlxtend.preprocessingimportTransactionEncoder
+Frommlxtend.frequent_patternsimportapriori,association_rules
+#Createthedataset
+Dataset={
+1:[“eggs”,”milk”,”bread”],
+2:[“eggs”,”apple”],
+3:[“milk”,”bread”],
+4:[“apple”,”milk”],
+5:[“milk”,”apple”,”bread”]
+}
+#Convertcategoricalvaluesintonumericformat
+Te=TransactionEncoder()
+Te_ary=te.fit(dataset.values()).transform(dataset.values())
+Df=pd.DataFrame(te_ary,columns=te.columns_)
+#ApplyApriorialgorithmtogeneratefrequentitemsetsandassociationrulesMin_sup=0.4
+Frequent_itemsets=apriori(df,min_support=min_sup,use_colnames=True)Association_rules=association_rules(frequent_itemsets,metric=”confidence”,min_threshold=0.6)
+#Printthefrequentitemsetsandassociationrules
+Print(“FrequentItemsets:\n”,frequent_itemsets)
+Print(“\nAssociationRules:\n”,association_rules)

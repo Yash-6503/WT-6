@@ -1,0 +1,68 @@
+//item.xml slip5
+<?xml version="1.0" encoding="UTF-8"?>
+
+<itemdetails>
+	<item>
+		<item-name>Compass</item-name>
+		<item-price>100</item-price>
+		<item-quantity>5</item-quantity>
+	</item>
+	<item>
+		<item-name>Eraser</item-name>
+		<item-price>5</item-price>
+		<item-quantity>5</item-quantity>
+	</item>
+	<item>
+		<item-name>book</item-name>
+		<item-price>600</item-price>
+		<item-quantity>6</item-quantity>
+	</item>
+	<item>
+		<item-name>Pen</item-name>
+		<item-price>10</item-price>
+		<item-quantity>9</item-quantity>
+	</item>
+	<item>
+		<item-name>Pencil</item-name>
+		<item-price>5</item-price>
+		<item-quantity>10</item-quantity>
+	</item>
+</itemdetails>
+
+//DA
+
+import pandas as pd
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+# Load the iris dataset
+df = pd.read_csv("./Datasets/Iris.csv")
+
+# View basic statistical details of each species
+setosa_stats = df[['species'] == 'Iris-setosa'].describe()
+versicolor_stats = df[['species'] == 'Iris-versicolor'].describe()
+virginica_stats = df[['species'] == 'Iris-virginica'].describe()
+
+print("Statistical details for Iris-setosa:")
+print(setosa_stats)
+print("\nStatistical details for Iris-versicolor:")
+print(versicolor_stats)
+print("\nStatistical details for Iris-virginica:")
+print(virginica_stats)
+
+# Apply logistic regression
+X = df.drop('species', axis=1)
+y = df['species']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Predict species
+y_pred = model.predict(X_test)
+
+# Calculate accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print("\nAccuracy of the logistic regression model:", accuracy)

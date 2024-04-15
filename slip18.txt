@@ -1,0 +1,84 @@
+<!-- slip18.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fibonacci Numbers</title>
+        <script>
+            function printFibonacci() {
+                var n = parseInt(prompt("Enter the number of Fibonacci numbers you want to print:"));
+                var fibNumbers = [];
+
+                if (n <= 0) {
+                    alert("Please enter a positive number.");
+                    return;
+                }
+
+                if (n >= 1) {
+                    fibNumbers.push(0);
+                }
+
+                if (n >= 2) {
+                    fibNumbers.push(1);
+                }
+
+                for (var i = 2; i < n; i++) {
+                    fibNumbers.push(fibNumbers[i - 1] + fibNumbers[i - 2]);
+                }
+
+                alert("Fibonacci numbers: " + fibNumbers.join(", "));
+            }
+        </script>
+    </head>
+
+    <body>
+        <h2>Fibonacci Numbers</h2>
+        <button onclick="printFibonacci()">Print Fibonacci Numbers</button>
+
+    </body>
+
+</html>
+
+//DA
+
+import re
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.corpus import stopwords
+from nltk.probability import FreqDist
+
+# Text paragraph
+text = """
+So, keep working. Keep striving. Never give up. Fall down seven times, get up eight. Ease is a greater threat to progress than hardship. Ease is a greater threat to progress than hardship. So, keep moving, keep growing, keep learning. See you at work.
+"""
+
+# Remove stopwords
+stop_words = set(stopwords.words('english'))
+cleaned_text = ' '.join(word for word in text.split() if word.lower() not in stop_words)
+
+# Tokenize words and sentences
+words = word_tokenize(cleaned_text)
+sentences = sent_tokenize(text)
+
+# Calculate word frequency distribution
+fdist = FreqDist(words)
+
+# Plot word frequencies
+plt.figure(figsize=(10, 6))
+fdist.plot(20, cumulative=False)
+plt.title('Word Frequency Distribution')
+plt.xlabel('Words')
+plt.ylabel('Frequency')
+plt.show()
+
+# Generate and plot wordcloud
+wordcloud = WordCloud(width=800, height=400, background_color='white').generate(cleaned_text)
+plt.figure(figsize=(10, 6))
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis('off')
+plt.title('Wordcloud')
+plt.show()

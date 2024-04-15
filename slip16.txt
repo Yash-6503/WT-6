@@ -1,0 +1,117 @@
+<!-- slip16.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Book Details</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $("#bookSelect").change(function () {
+                    var selectedBook = $(this).val();
+                    $.ajax({
+                        url: "getBookDetails.php",
+                        method: "POST",
+                        data: { book: selectedBook },
+                        dataType: "json",
+                        success: function (data) {
+                            console.log(data);
+                            $("#bookDetails").html("<p>Title: " + data.title + "</p><p>Author: " + data.author + "</p><p>Year: " + data.year + "</p><p>Price: ₹" + data.price + "</p>");
+                        }
+                    });
+                });
+            });
+        </script>
+    </head>
+
+    <body style="text-align:center;">
+        <h2>Select a Book get its Details..</h2>
+        <select id="bookSelect">
+            <option value="">Select a book</option>
+            <option value="Java">Java</option>
+            <option value="Python">Python</option>
+            <option value="C++">C++</option>
+        </select>
+
+        <div id="bookDetails"></div>
+
+    </body>
+
+</html>
+
+//getBookDetails.php
+<?php
+$selectedBook = $_POST['book'];
+
+$xml = simplexml_load_file('book.xml');
+
+foreach ($xml->book as $book) {
+    if ($book->title == $selectedBook) 
+    {
+        $bookDetails = array(
+            'title' => (string)$book->title,
+            'author' => (string)$book->author,
+            'year' => (int)$book->year,
+            'price' => (float)$book->price
+        );
+        echo json_encode($bookDetails);
+        break;
+    }
+}
+?>
+
+
+//book.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<books>
+    <book>
+        <title>Java</title>
+        <author>James Gosling</author>
+        <year>1970</year>
+        <price>200</price>
+    </book>
+    <book>
+        <title>Python</title>
+        <author>R.K.Python</author>
+        <year>1990</year>
+        <price>250</price>
+    </book>
+    <book>
+        <title>C++</title>
+        <author>C.P.P</author>
+        <year>1980</year>
+        <price>150</price>
+    </book>
+</books>
+
+
+//DA
+
+import re
+from nltk.tokenize import word_tokenize
+from gensim.summarization import summarize
+
+# Sample text paragraph
+text = """
+Natural language processing (NLP) is a field of artificial intelligence that focuses on the interaction between computers and humans through natural language. It enables computers to understand, interpret, and generate human language in a way that is both meaningful and useful. NLP algorithms are designed to analyze large amounts of natural language data and derive patterns and insights from it. This can be particularly useful in applications such as sentiment analysis, machine translation, chatbots, and more.
+"""
+
+# Preprocess the text to remove special characters and digits
+processed_text = re.sub(r'[^a-zA-Z\s]', '', text)
+
+# Tokenize the processed text
+tokens = word_tokenize(processed_text)
+
+# Generate the summary using extractive summarization
+summary = summarize(processed_text)
+
+# Print the summary
+print("Original Text:")
+print(text)
+print("\nPreprocessed Text:")
+print(processed_text)
+print("\nSummary:")
+print(summary)
