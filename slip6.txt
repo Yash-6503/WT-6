@@ -56,24 +56,29 @@ echo "</ul>";
 
 
 //DA
+#slip6
+
 import pandas as pd
-From mlxtend.preprocessing import TransactionEncoder
-From mlxtend.frequent_patterns import apriori,association_rules
-#create the dataset
-TID=
-{1:[“bread”,”milk”],2:[“bread”,”diaper”,”beer”,”eggs”],3:[“milk”,”diaper”,”beer”,”coke”],4:[“bread”,”milk”,”diaper”,”beer”],5:[“bread”,”milk”,”diaper”,”coke”]}
+from mlxtend.preprocessing import TransactionEncoder
+from mlxtend.frequent_patterns import apriori, association_rules
+
+#createthedataset
+TID={1:['bread','milk'],2:['bread','diaper','beer','eggs'],3:['milk','diaper','beer','coke'],4:['bread','milk','diaper','beer'],5:['bread','milk','diaper','coke']}
 Transactions=[]
-Forkey,valueinTID.items():
-Transactions.append(value)
+for key,value in TID.items():
+    Transactions.append(value)
+    
 #convertthecategoricalvaluesintonumericformat
 Te=TransactionEncoder()
-Te_ary=te.fit_transform(transactions)
-Df=pd.DataFrame(te_ary,columns=te.columns_)
+Te_ary=Te.fit_transform(Transactions)
+Df=pd.DataFrame(Te_ary,columns=Te.columns_)
 #applytheapriorialgorithmwithdifferentmin_supvalues
 Min_sup_values=[0.2,0.4,0.6]
-Formin_supinmin_sup_values:
-Frequent_itemsets=apriori(df,min_support=min_sup,use_colnames=True)Rules=association_rules(frequent_itemsets,metric=”confidence”,min_threshold=0.7)Print(“Min_sup:”,min_sup)
-Print(“FrequentItemsets:”)
-Print(frequent_itemsets)
-Print(“AssociationRules:”)
-Print(rules)
+for min_sup in Min_sup_values:
+    Frequent_itemsets=apriori(Df,min_support=min_sup,use_colnames=True)
+    Rules=association_rules(Frequent_itemsets, metric = 'confidence', min_threshold=0.7)
+    print('Min_sup:',min_sup)
+    print('FrequentItemsets:')
+    print(Frequent_itemsets)
+    print('AssociationRules:')
+    print(Rules)
